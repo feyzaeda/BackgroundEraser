@@ -11,12 +11,16 @@ import android.graphics.PorterDuffXfermode;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MyCustomView extends View {
 
     private Bitmap destBitmap;
     private Canvas destCanvas = new Canvas();
     private Paint destPaint = new Paint();
     private Path destPath = new Path();
+    private ArrayList<Bitmap> listAction = new ArrayList<>();
+
 
     public MyCustomView(Context context) {
         super(context);
@@ -27,6 +31,7 @@ public class MyCustomView extends View {
 
         destCanvas.setBitmap(destBitmap);
         destCanvas.drawBitmap(rawBitmap,0,0,null);
+
 
         destPaint.setAlpha(0);
         destPaint.setAntiAlias(true);
@@ -47,6 +52,23 @@ public class MyCustomView extends View {
 
     }
 
+    public void lastAction(Bitmap bitmap){
+        listAction.add(bitmap);
+    }
+    public void Undo(){
+        if (listAction.size() > 0){
+            listAction.remove(listAction.size()-1);
+            if (listAction.size() > 0){
+                destBitmap = listAction.get(listAction.size() - 1);
+            }
+            else {
+                destBitmap = Bitmap.createBitmap(getWidth(),getHeight(),Bitmap.Config.ARGB_8888);
+            }
+            destCanvas = new Canvas(destBitmap);
+            invalidate();
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float xPos = event.getX();
@@ -60,11 +82,35 @@ public class MyCustomView extends View {
             case MotionEvent.ACTION_MOVE:
                 destPath.lineTo(xPos,yPos);
                 break;
+            case MotionEvent.ACTION_UP:
+                touchUp();
+                Undo();
+                break;
 
                 default:
                     return false;
         }
         invalidate();
         return true;
+    }
+
+
+
+    private void touchUp() {
+        destPath.reset();
+    }
+
+    public Bitmap getBitmap() {
+        this.setDrawingCacheEnabled(true);
+
+        this.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(this.getDrawingCache());
+
+        this.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    public void Save(){
+
     }
 }
