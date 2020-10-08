@@ -1,6 +1,9 @@
 package com.example.backgrounderaser;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,6 +14,9 @@ import android.graphics.PorterDuffXfermode;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+
 import java.util.ArrayList;
 
 public class MyCustomView extends View {
@@ -20,6 +26,7 @@ public class MyCustomView extends View {
     private Paint destPaint = new Paint();
     private Path destPath = new Path();
     private ArrayList<Bitmap> listAction = new ArrayList<>();
+    private static final int REQUESST_PERMISSION = 1001;
 
 
     public MyCustomView(Context context) {
@@ -52,7 +59,7 @@ public class MyCustomView extends View {
 
     }
 
-    public void lastAction(Bitmap bitmap){
+    /*public void lastAction(Bitmap bitmap){
         listAction.add(bitmap);
     }
     public void Undo(){
@@ -67,7 +74,7 @@ public class MyCustomView extends View {
             destCanvas = new Canvas(destBitmap);
             invalidate();
         }
-    }
+    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -84,7 +91,7 @@ public class MyCustomView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 touchUp();
-                Undo();
+                //Undo();
                 break;
 
                 default:
@@ -110,7 +117,7 @@ public class MyCustomView extends View {
         return bitmap;
     }
 
-    public void Save(){
 
-    }
+
+
 }
